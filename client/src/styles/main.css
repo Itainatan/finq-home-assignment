@@ -9,6 +9,10 @@
   --color-danger: #a32b2b;
   --color-danger-soft: #fbeaea;
   --color-focus: #4b7bd4;
+  --color-hover: #f2f5fa;
+  --color-accent-soft: #e7eefb;
+  --color-skeleton: #e9ecf1;
+  --color-skeleton-highlight: #f3f5f8;
 
   --radius: 10px;
   --space-1: 4px;
@@ -138,4 +142,14 @@ label {
   direction: ltr;
   unicode-bidi: isolate;
   text-align: left;
+}
+
+/*
+ * For fields the user types into. `direction` is deliberately left unset so the
+ * `dir="auto"` attribute decides: a Latin name resolves LTR, a Hebrew one RTL.
+ * Declaring `direction` here would override the attribute and defeat that.
+ */
+.auto-value {
+  unicode-bidi: isolate;
+  text-align: start;
 }

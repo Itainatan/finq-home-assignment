@@ -209,7 +209,9 @@ const displayName = computed(() =>
       The detail layout is RTL with Hebrew labels, as the spec asks. Latin data
       inside it is isolated rather than merely aligned: `dir` plus
       `unicode-bidi: isolate` stops an email, a phone number or a house number
-      from reordering against the surrounding Hebrew.
+      from reordering against the surrounding Hebrew. Read-only values are
+      pinned LTR; the name inputs resolve their own direction, because they are
+      the only place a user can enter Hebrew.
     -->
     <article v-else class="detail card" dir="rtl" lang="he">
       <h1 class="visually-hidden">פרטי משתמש</h1>
@@ -217,23 +219,20 @@ const displayName = computed(() =>
       <div class="layout">
         <img class="portrait" :src="profile.pictureUrl" :alt="`תמונת הפרופיל של ${displayName}`" />
 
+        <!--
+          Field order pairs what belongs together: the two editable name inputs
+          share a row, then the derived values, then contact. Address spans the
+          full width because it is the longest single value.
+        -->
         <dl class="fields">
-          <div class="field">
-            <dt>מין</dt>
-            <dd>
-              <span v-if="isGenderHebrew">{{ genderLabel }}</span>
-              <bdi v-else class="ltr-value">{{ genderLabel }}</bdi>
-            </dd>
-          </div>
-
           <div class="field">
             <dt><label for="first-name">שם פרטי</label></dt>
             <dd>
               <input
                 id="first-name"
                 v-model="firstName"
-                class="ltr-value"
-                dir="ltr"
+                class="auto-value"
+                dir="auto"
                 type="text"
                 autocomplete="given-name"
                 :aria-invalid="showValidation && !!firstNameError"
@@ -251,8 +250,8 @@ const displayName = computed(() =>
               <input
                 id="last-name"
                 v-model="lastName"
-                class="ltr-value"
-                dir="ltr"
+                class="auto-value"
+                dir="auto"
                 type="text"
                 autocomplete="family-name"
                 :aria-invalid="showValidation && !!lastNameError"
@@ -261,6 +260,14 @@ const displayName = computed(() =>
               <p v-if="showValidation && lastNameError" id="last-name-error" class="field-error">
                 {{ lastNameError }}
               </p>
+            </dd>
+          </div>
+
+          <div class="field">
+            <dt>מין</dt>
+            <dd>
+              <span v-if="isGenderHebrew">{{ genderLabel }}</span>
+              <bdi v-else class="ltr-value">{{ genderLabel }}</bdi>
             </dd>
           </div>
 
@@ -275,13 +282,13 @@ const displayName = computed(() =>
           </div>
 
           <div class="field">
-            <dt>כתובת</dt>
-            <dd><bdi class="ltr-value">{{ address || '—' }}</bdi></dd>
-          </div>
-
-          <div class="field">
             <dt>מדינה</dt>
             <dd><bdi class="ltr-value">{{ profile.country }}</bdi></dd>
+          </div>
+
+          <div class="field field--wide">
+            <dt>כתובת</dt>
+            <dd><bdi class="ltr-value">{{ address || '—' }}</bdi></dd>
           </div>
 
           <div class="field">
@@ -370,6 +377,10 @@ const displayName = computed(() =>
 
 .field {
   min-width: 0;
+}
+
+.field--wide {
+  grid-column: 1 / -1;
 }
 
 dt {
