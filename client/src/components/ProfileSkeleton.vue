@@ -54,7 +54,12 @@ withDefaults(defineProps<{ rows?: number }>(), { rows: 6 });
 }
 
 .shimmer {
-  background: linear-gradient(90deg, #e9ecf1 25%, #f3f5f8 50%, #e9ecf1 75%);
+  background: linear-gradient(
+    90deg,
+    var(--color-skeleton) 25%,
+    var(--color-skeleton-highlight) 50%,
+    var(--color-skeleton) 75%
+  );
   background-size: 200% 100%;
   animation: shimmer 1.4s ease-in-out infinite;
 }

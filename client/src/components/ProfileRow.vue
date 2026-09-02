@@ -49,7 +49,7 @@ const fullName = computed(() => formatFullName(props.profile));
 }
 
 .hit-area:hover {
-  background: #f2f5fa;
+  background: var(--color-hover);
 }
 
 .thumb {
@@ -76,7 +76,7 @@ const fullName = computed(() => formatFullName(props.profile));
   padding: 1px 6px;
   margin-left: var(--space-2);
   border-radius: 999px;
-  background: #e7eefb;
+  background: var(--color-accent-soft);
   color: var(--color-accent);
 }
 
