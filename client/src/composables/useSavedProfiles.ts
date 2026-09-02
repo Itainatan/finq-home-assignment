@@ -16,6 +16,15 @@ export function useSavedProfilesQuery(enabled?: Ref<boolean>) {
     queryKey: SAVED_PROFILES_KEY,
     queryFn: listSavedProfiles,
     enabled,
+
+    /*
+     * Moving between the saved list and a saved profile mounts a fresh
+     * observer each time, and the default staleTime of 0 turns every one of
+     * those into a refetch. Thirty seconds is long enough to cover a single
+     * interaction. Writes are unaffected: the mutations invalidate this key,
+     * and invalidation refetches regardless of staleTime.
+     */
+    staleTime: 30_000,
   });
 }
 
