@@ -6,11 +6,14 @@ import { AppModule } from './app.module';
  * Allowed browser origins come from FRONTEND_URL as a comma separated list so
  * that local development and the deployed frontend can both be permitted
  * without hardcoding a production URL in the source.
+ *
+ * A trailing slash is stripped because an `Origin` header never carries one:
+ * pasting a deployment URL in verbatim would otherwise silently allow nothing.
  */
 function parseAllowedOrigins(raw: string | undefined): string[] {
   return (raw ?? '')
     .split(',')
-    .map((origin) => origin.trim())
+    .map((origin) => origin.trim().replace(/\/$/, ''))
     .filter(Boolean);
 }
 

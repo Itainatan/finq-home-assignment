@@ -4,10 +4,10 @@ A small full-stack app: fetch ten random people, browse and filter them, open on
 
 ## Live
 
-| Piece    | URL                    |
-| -------- | ---------------------- |
-| Frontend | _add after deployment_ |
-| Backend  | _add after deployment_ |
+| Piece    | URL                                            |
+| -------- | ---------------------------------------------- |
+| Frontend | https://finq-home-assignment.vercel.app         |
+| Backend  | https://finq-home-assignment.onrender.com       |
 
 The backend runs on a free Render instance, which sleeps when idle. The first request after a quiet period can take up to about a minute to wake it — that is the platform, not the app.
 
