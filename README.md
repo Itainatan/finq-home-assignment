@@ -16,6 +16,8 @@ The backend runs on a free Render instance, which sleeps when idle. The first re
 **Frontend**
 Vue 3 with the Composition API, TypeScript, Vite, Vue Router, Pinia, TanStack Vue Query, vue3-toastify. Plain scoped CSS, no UI framework.
 
+No design was supplied, and the surface is two lists and one form. A component library brings a theme to override exactly where the risk is: the RTL detail screen, where direction-aware layout fights someone else's defaults. Scoped styles over a few tokens in `main.css` instead. The cost is that focus rings, skeletons and empty states are hand-written.
+
 **Backend**
 NestJS, TypeScript, Prisma, PostgreSQL.
 

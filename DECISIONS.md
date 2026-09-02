@@ -26,10 +26,6 @@ Update and delete on a saved profile are optimistic with snapshot rollback: smal
 
 RTL layout, Hebrew labels, Latin values *isolated* rather than merely aligned. `direction` alone is not enough: without isolation the bidi algorithm reorders a Latin run against surrounding Hebrew — how a phone number's `+` lands at the wrong end. Read-only values are `<bdi>` pinned LTR. Name inputs use `dir="auto"`: the spec wants a Latin name LTR, but it is the only field a user can type Hebrew into, and `auto` serves both; CSS `direction` is unset there because it would override the attribute. Isolation also keeps caret and selection sane while editing. Hebrew stops at the card: toasts and native dialogs are app chrome that outlives the screen, so they stay English.
 
-## Plain CSS, not a component library
-
-No design was supplied, and the surface is two lists and one form. A library brings a theme to override exactly where the risk is: the RTL screen, where direction-aware layout fights someone else's defaults. Scoped styles over a few tokens in `main.css` instead. **Tradeoff:** focus rings, skeletons and empty states are hand-written.
-
 ## Corners cut on purpose
 
 No auth, no pagination, no backend filtering — ten rows do not need them. Filtering is client-side, synchronous and undebounced: nothing is fetched, so a delay would only make the input feel broken. There is no `GET /api/profiles/:id`; a cold saved detail refetches the collection and selects by id. Delete uses a native `confirm` rather than a modal system for one call site.
