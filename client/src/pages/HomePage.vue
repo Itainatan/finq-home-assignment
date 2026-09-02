@@ -21,13 +21,22 @@ async function fetchProfiles(): Promise<void> {
 <template>
   <div class="page">
     <h1>Profile Explorer</h1>
+    <!--
+      Home is the entry point, but it is not always the first thing the user
+      sees. Once a batch exists, saying so is the difference between a button
+      that looks harmless and one that is honest about replacing it.
+    -->
     <p class="muted intro">
-      Fetch ten random people, or review the ones you have already saved.
+      {{
+        store.hasBatch
+          ? 'A batch of ten is already loaded. Fetching again replaces it.'
+          : 'Fetch ten random people, or review the ones you have already saved.'
+      }}
     </p>
 
     <div class="actions">
       <button type="button" class="primary" :disabled="store.isLoading" @click="fetchProfiles">
-        {{ store.isLoading ? 'Fetching…' : 'Fetch' }}
+        {{ store.isLoading ? 'Fetching…' : store.hasBatch ? 'Fetch new batch' : 'Fetch' }}
       </button>
       <button type="button" @click="router.push({ name: 'saved-list' })">History</button>
     </div>
