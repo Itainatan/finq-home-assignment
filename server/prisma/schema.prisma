@@ -1,0 +1,41 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// A profile the user chose to persist.
+/// `id` is our own identity; `externalId` is the identity at the RandomUser boundary.
+model Profile {
+  id         String @id @default(cuid())
+  externalId String @unique @map("external_id")
+
+  title     String @default("")
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+
+  gender String
+  email  String
+  phone  String
+
+  /// Stored as a date, never as an age: age is derived and goes stale.
+  dateOfBirth DateTime @map("date_of_birth")
+
+  country String
+  state   String?
+  city    String?
+
+  streetName   String? @map("street_name")
+  streetNumber String? @map("street_number")
+
+  pictureUrl   String @map("picture_url")
+  thumbnailUrl String @map("thumbnail_url")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("profiles")
+}
