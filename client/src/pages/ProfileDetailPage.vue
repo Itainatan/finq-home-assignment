@@ -114,6 +114,12 @@ async function onUpdate(): Promise<void> {
 
   try {
     await updateMutation.mutateAsync({ id: profile.value.id as string, name });
+
+    // The same person may still be sitting in the random batch. Written only
+    // after the server accepts, so a rolled-back update cannot leave the store
+    // holding a name the database refused.
+    store.renameProfile(profile.value.externalId, name.firstName, name.lastName);
+
     toast.success('Profile updated.');
   } catch {
     toast.error('Update failed. The change was rolled back.');
