@@ -24,7 +24,23 @@ function openProfile(profile: Profile): void {
 
 <template>
   <div class="page">
-    <h1>Random profiles</h1>
+    <div class="header">
+      <h1>Random profiles</h1>
+
+      <!--
+        A screen that can fetch when it is empty should be able to fetch when
+        it is full. Hidden while empty, because the empty state carries its own
+        button and two identical actions on one screen help nobody.
+      -->
+      <button
+        v-if="store.hasBatch"
+        type="button"
+        :disabled="store.isLoading"
+        @click="store.fetchBatch()"
+      >
+        {{ store.isLoading ? 'Fetching…' : 'Fetch new batch' }}
+      </button>
+    </div>
 
     <ProfileSkeleton v-if="store.isLoading" />
 
@@ -58,6 +74,14 @@ function openProfile(profile: Profile): void {
 </template>
 
 <style scoped>
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
 .no-match {
   padding: var(--space-5);
   text-align: center;
