@@ -30,11 +30,13 @@ function openProfile(profile: Profile): void {
 
     <ErrorState v-else-if="store.error" :message="store.error" @retry="store.fetchBatch" />
 
+    <!-- This page owns the batch, so its Fetch button fetches here rather
+         than sending the user back to Home to press a different button. -->
     <EmptyState
       v-else-if="!store.hasBatch"
       message="No batch loaded. Fetch ten random people to get started."
-      action-label="Fetch"
-      @action="router.push({ name: 'home' })"
+      :action-label="store.isLoading ? 'Fetching…' : 'Fetch'"
+      @action="store.fetchBatch()"
     />
 
     <template v-else>

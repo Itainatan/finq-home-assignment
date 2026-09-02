@@ -8,9 +8,11 @@ import ProfileList from '@/components/ProfileList.vue';
 import ProfileSkeleton from '@/components/ProfileSkeleton.vue';
 import { useProfileFilters } from '@/composables/useProfileFilters';
 import { useSavedProfilesQuery } from '@/composables/useSavedProfiles';
+import { useRandomProfilesStore } from '@/stores/randomProfiles.store';
 import type { Profile } from '@/types/profile';
 
 const router = useRouter();
+const randomStore = useRandomProfilesStore();
 const { data, isPending, isError, refetch } = useSavedProfilesQuery();
 
 const profiles = computed<Profile[]>(() => data.value ?? []);
@@ -18,6 +20,17 @@ const { nameQuery, countryQuery, filteredProfiles } = useProfileFilters(profiles
 
 function openProfile(profile: Profile): void {
   void router.push({ name: 'saved-detail', params: { id: profile.id } });
+}
+
+/**
+ * The request starts here but the user moves on immediately: the random list
+ * owns both the skeleton and the failure state for this batch, so it is the
+ * honest place to wait. `fetchBatch` flips `isLoading` synchronously, so that
+ * page renders its skeleton on arrival rather than flashing empty.
+ */
+function fetchRandomProfiles(): void {
+  void randomStore.fetchBatch();
+  void router.push({ name: 'random-list' });
 }
 </script>
 
@@ -41,7 +54,7 @@ function openProfile(profile: Profile): void {
       v-else-if="profiles.length === 0"
       message="No saved profiles yet."
       action-label="Fetch random profiles"
-      @action="router.push({ name: 'home' })"
+      @action="fetchRandomProfiles"
     />
 
     <template v-else>
