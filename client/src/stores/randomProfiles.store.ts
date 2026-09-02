@@ -18,8 +18,12 @@ export const useRandomProfilesStore = defineStore('randomProfiles', () => {
   const isLoading = ref(false);
   const error = ref<string | null>(null);
 
-  /** External ids saved during this session, so the list can mark them. */
-  const savedExternalIds = ref<Set<string>>(new Set());
+  /**
+   * Profiles saved during this session, keyed by external id and holding the
+   * id the database assigned. The list needs the flag to mark a row and the id
+   * to send that row to its saved copy instead of the random one.
+   */
+  const savedIdByExternalId = ref<Map<string, string>>(new Map());
 
   const hasBatch = computed(() => profiles.value.length > 0);
 
@@ -51,12 +55,23 @@ export const useRandomProfilesStore = defineStore('randomProfiles', () => {
     }
   }
 
-  function markAsSaved(externalId: string): void {
-    savedExternalIds.value = new Set(savedExternalIds.value).add(externalId);
+  function markAsSaved(externalId: string, id: string): void {
+    savedIdByExternalId.value = new Map(savedIdByExternalId.value).set(externalId, id);
+  }
+
+  /** A deleted profile must stop pointing the random list at a dead id. */
+  function markAsUnsaved(externalId: string): void {
+    const next = new Map(savedIdByExternalId.value);
+    next.delete(externalId);
+    savedIdByExternalId.value = next;
   }
 
   function isSaved(externalId: string): boolean {
-    return savedExternalIds.value.has(externalId);
+    return savedIdByExternalId.value.has(externalId);
+  }
+
+  function savedIdFor(externalId: string): string | undefined {
+    return savedIdByExternalId.value.get(externalId);
   }
 
   return {
@@ -68,6 +83,8 @@ export const useRandomProfilesStore = defineStore('randomProfiles', () => {
     findByExternalId,
     renameProfile,
     markAsSaved,
+    markAsUnsaved,
     isSaved,
+    savedIdFor,
   };
 });

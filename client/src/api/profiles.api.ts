@@ -21,8 +21,11 @@ interface SavedProfileDto {
   thumbnailUrl: string;
 }
 
+/** A profile that has been through the database, so its id is not optional. */
+export type SavedProfile = Profile & { id: string };
+
 /** Backend profiles are folded into the same model the rest of the app uses. */
-function toProfile(dto: SavedProfileDto): Profile {
+function toProfile(dto: SavedProfileDto): SavedProfile {
   return {
     id: dto.id,
     source: 'saved',
@@ -57,7 +60,7 @@ export async function listSavedProfiles(): Promise<Profile[]> {
   return dtos.map(toProfile);
 }
 
-export async function saveProfile(profile: Profile): Promise<Profile> {
+export async function saveProfile(profile: Profile): Promise<SavedProfile> {
   const dto = await apiRequest<SavedProfileDto>('/api/profiles', {
     method: 'POST',
     body: JSON.stringify(toCreatePayload(profile)),

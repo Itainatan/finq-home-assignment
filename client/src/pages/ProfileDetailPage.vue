@@ -131,7 +131,7 @@ async function onSave(): Promise<void> {
   try {
     const saved = await saveMutation.mutateAsync(payload);
     store.renameProfile(payload.externalId, name.firstName, name.lastName);
-    store.markAsSaved(payload.externalId);
+    store.markAsSaved(payload.externalId, saved.id);
     toast.success('Profile saved.');
 
     // The route is the single source of truth for a profile's source, so the
@@ -146,12 +146,15 @@ async function onSave(): Promise<void> {
 }
 
 async function onDelete(): Promise<void> {
-  if (!profile.value?.id) return;
+  // Captured up front: the optimistic removal clears `profile` before we land.
+  const target = profile.value;
+  if (!target?.id) return;
   if (!window.confirm('Delete this profile?')) return;
 
   isLeavingDeliberately.value = true;
   try {
-    await deleteMutation.mutateAsync(profile.value.id);
+    await deleteMutation.mutateAsync(target.id);
+    store.markAsUnsaved(target.externalId);
     toast.success('Profile deleted.');
     await router.push({ name: 'saved-list' });
   } catch {

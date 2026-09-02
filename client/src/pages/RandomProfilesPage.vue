@@ -17,8 +17,20 @@ const { nameQuery, countryQuery, filteredProfiles } = useProfileFilters(
   toRef(store, 'profiles'),
 );
 
+/**
+ * A profile saved in this session is already in the database, so its row opens
+ * the saved copy. Sending it to the random route would offer Save on a record
+ * that exists, and would write a rename into the store alone while the
+ * database quietly kept the old name.
+ */
 function openProfile(profile: Profile): void {
-  void router.push({ name: 'random-detail', params: { externalId: profile.externalId } });
+  const savedId = store.savedIdFor(profile.externalId);
+
+  void router.push(
+    savedId
+      ? { name: 'saved-detail', params: { id: savedId } }
+      : { name: 'random-detail', params: { externalId: profile.externalId } },
+  );
 }
 </script>
 
