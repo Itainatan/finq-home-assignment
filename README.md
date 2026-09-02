@@ -4,10 +4,14 @@ A small full-stack app: fetch ten random people, browse and filter them, open on
 
 ## Live
 
-| Piece    | URL                                            |
-| -------- | ---------------------------------------------- |
-| Frontend | https://finq-home-assignment.vercel.app         |
-| Backend  | https://finq-home-assignment.onrender.com       |
+| Piece            | URL                                              |
+| ---------------- | ------------------------------------------------ |
+| Frontend         | https://finq-home-assignment.vercel.app           |
+| Backend health   | https://finq-home-assignment.onrender.com/health  |
+
+The API itself lives under `/api` on that host; `/health` is the one endpoint
+that answers a plain browser GET, so it is the useful link to click. The root
+path returns 404 on purpose — nothing is mounted there.
 
 The backend runs on a free Render instance, which sleeps when idle. The first request after a quiet period can take up to about a minute to wake it — that is the platform, not the app.
 
