@@ -169,7 +169,21 @@ async function onDelete(): Promise<void> {
   }
 }
 
+/**
+ * Back means the entry the user actually came from, which carries the list's
+ * filter query; pushing the list route by name would build a bare URL and drop
+ * it. Vue Router records the previous entry in the history state, and its
+ * absence means this page was opened directly — a deep link or a reload — so
+ * there is nothing to return to and the matching list is the honest fallback.
+ */
 function onBack(): void {
+  const historyState = window.history.state as { back?: string | null } | null;
+
+  if (historyState?.back) {
+    router.back();
+    return;
+  }
+
   void router.push({ name: isSavedSource.value ? 'saved-list' : 'random-list' });
 }
 
