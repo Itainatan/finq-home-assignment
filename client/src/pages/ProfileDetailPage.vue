@@ -85,6 +85,14 @@ const isBusy = computed(
 
 /* ------------------------------------------------------------- actions ---- */
 
+/*
+ * Hebrew stops at the edge of the card. Toasts and native dialogs float above
+ * the whole app and outlive the screen that fired them — the delete toast lands
+ * on the English saved list — so they stay in the app's language. The failure
+ * toast already carried an English message from ApiError on one path and a
+ * Hebrew one on the other.
+ */
+
 function trimmedName() {
   return { firstName: firstName.value.trim(), lastName: lastName.value.trim() };
 }
@@ -100,15 +108,15 @@ async function onUpdate(): Promise<void> {
     store.renameProfile(profile.value.externalId, name.firstName, name.lastName);
     firstName.value = name.firstName;
     lastName.value = name.lastName;
-    toast.success('הפרופיל עודכן ברשימה');
+    toast.success('Profile updated in the list.');
     return;
   }
 
   try {
     await updateMutation.mutateAsync({ id: profile.value.id as string, name });
-    toast.success('הפרופיל עודכן');
+    toast.success('Profile updated.');
   } catch {
-    toast.error('העדכון נכשל והשינוי הוחזר לקדמותו');
+    toast.error('Update failed. The change was rolled back.');
   }
 }
 
@@ -124,7 +132,7 @@ async function onSave(): Promise<void> {
     const saved = await saveMutation.mutateAsync(payload);
     store.renameProfile(payload.externalId, name.firstName, name.lastName);
     store.markAsSaved(payload.externalId);
-    toast.success('הפרופיל נשמר');
+    toast.success('Profile saved.');
 
     // The route is the single source of truth for a profile's source, so the
     // page moves to the saved route instead of quietly changing behaviour
@@ -133,22 +141,22 @@ async function onSave(): Promise<void> {
     await router.replace({ name: 'saved-detail', params: { id: saved.id } });
     isLeavingDeliberately.value = false;
   } catch (error) {
-    toast.error(error instanceof Error ? error.message : 'השמירה נכשלה');
+    toast.error(error instanceof Error ? error.message : 'Could not save this profile.');
   }
 }
 
 async function onDelete(): Promise<void> {
   if (!profile.value?.id) return;
-  if (!window.confirm('למחוק את הפרופיל הזה?')) return;
+  if (!window.confirm('Delete this profile?')) return;
 
   isLeavingDeliberately.value = true;
   try {
     await deleteMutation.mutateAsync(profile.value.id);
-    toast.success('הפרופיל נמחק');
+    toast.success('Profile deleted.');
     await router.push({ name: 'saved-list' });
   } catch {
     isLeavingDeliberately.value = false;
-    toast.error('המחיקה נכשלה והפרופיל הוחזר');
+    toast.error('Delete failed. The profile was restored.');
   }
 }
 

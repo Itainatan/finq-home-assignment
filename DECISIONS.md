@@ -24,7 +24,7 @@ Update and delete on a saved profile are optimistic with snapshot rollback: smal
 
 ## Mixed direction on the detail screen
 
-RTL layout, Hebrew labels, Latin values *isolated* rather than merely aligned. `direction` alone is not enough: without isolation the bidi algorithm reorders a Latin run against surrounding Hebrew — how a phone number's `+` lands at the wrong end. Read-only values are `<bdi>` pinned LTR. Name inputs use `dir="auto"`: the spec wants a Latin name LTR, but it is the only field a user can type Hebrew into, and `auto` serves both; CSS `direction` is unset there because it would override the attribute. Isolation also keeps caret and selection sane while editing.
+RTL layout, Hebrew labels, Latin values *isolated* rather than merely aligned. `direction` alone is not enough: without isolation the bidi algorithm reorders a Latin run against surrounding Hebrew — how a phone number's `+` lands at the wrong end. Read-only values are `<bdi>` pinned LTR. Name inputs use `dir="auto"`: the spec wants a Latin name LTR, but it is the only field a user can type Hebrew into, and `auto` serves both; CSS `direction` is unset there because it would override the attribute. Isolation also keeps caret and selection sane while editing. Hebrew stops at the card: toasts and native dialogs are app chrome that outlives the screen, so they stay English.
 
 ## Plain CSS, not a component library
 
