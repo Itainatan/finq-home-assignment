@@ -7,6 +7,7 @@ import ProfileFilters from '@/components/ProfileFilters.vue';
 import ProfileList from '@/components/ProfileList.vue';
 import ProfileSkeleton from '@/components/ProfileSkeleton.vue';
 import { useProfileFilters } from '@/composables/useProfileFilters';
+import { useQueryParam } from '@/composables/useQueryParam';
 import { useRandomProfilesStore } from '@/stores/randomProfiles.store';
 import type { Profile } from '@/types/profile';
 
@@ -15,6 +16,8 @@ const store = useRandomProfilesStore();
 
 const { nameQuery, countryQuery, filteredProfiles } = useProfileFilters(
   toRef(store, 'profiles'),
+  useQueryParam('name'),
+  useQueryParam('country'),
 );
 
 /**

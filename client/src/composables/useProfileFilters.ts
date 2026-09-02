@@ -6,10 +6,16 @@ import type { Profile } from '@/types/profile';
  * Filtering is synchronous and immediate, with no debounce: ten already-loaded
  * records are being filtered in memory and no request is issued, so a delay
  * would only make the input feel laggy.
+ *
+ * Where the two fields are stored is the caller's decision. The pages hand in
+ * URL-backed refs so a filtered list survives being navigated away from; the
+ * defaults keep the matching logic testable on its own.
  */
-export function useProfileFilters(profiles: Ref<Profile[]>) {
-  const nameQuery = ref('');
-  const countryQuery = ref('');
+export function useProfileFilters(
+  profiles: Ref<Profile[]>,
+  nameQuery: Ref<string> = ref(''),
+  countryQuery: Ref<string> = ref(''),
+) {
 
   const hasActiveFilter = computed(
     () => nameQuery.value.trim().length > 0 || countryQuery.value.trim().length > 0,

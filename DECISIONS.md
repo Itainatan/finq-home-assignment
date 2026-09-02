@@ -28,7 +28,7 @@ RTL layout, Hebrew labels, Latin values *isolated* rather than merely aligned. `
 
 ## Corners cut on purpose
 
-No auth, no pagination, no backend filtering — ten rows do not need them. Filtering is client-side, synchronous and undebounced: nothing is fetched, so a delay would only make the input feel broken. There is no `GET /api/profiles/:id`; a cold saved detail refetches the collection and selects by id. Delete uses a native `confirm` rather than a modal system for one call site.
+No auth, no pagination, no backend filtering — ten rows do not need them. Filtering is client-side, synchronous and undebounced: nothing is fetched, so a delay would only make the input feel broken. Both fields live in the URL query, written with `replace`, so returning from a profile lands on the filtered list instead of burying it in history. There is no `GET /api/profiles/:id`; a cold saved detail refetches the collection and selects by id. Delete uses a native `confirm` rather than a modal system for one call site.
 
 **In production:** server-side pagination, filtering and indexes; a real error contract instead of status-code mapping in the client; structured logging and tracing; integration tests against a real database in CI alongside migrations; and auth the moment profiles stop being global.
 

@@ -7,6 +7,7 @@ import ProfileFilters from '@/components/ProfileFilters.vue';
 import ProfileList from '@/components/ProfileList.vue';
 import ProfileSkeleton from '@/components/ProfileSkeleton.vue';
 import { useProfileFilters } from '@/composables/useProfileFilters';
+import { useQueryParam } from '@/composables/useQueryParam';
 import { useSavedProfilesQuery } from '@/composables/useSavedProfiles';
 import { useRandomProfilesStore } from '@/stores/randomProfiles.store';
 import type { Profile } from '@/types/profile';
@@ -16,7 +17,11 @@ const randomStore = useRandomProfilesStore();
 const { data, isPending, isError, refetch } = useSavedProfilesQuery();
 
 const profiles = computed<Profile[]>(() => data.value ?? []);
-const { nameQuery, countryQuery, filteredProfiles } = useProfileFilters(profiles);
+const { nameQuery, countryQuery, filteredProfiles } = useProfileFilters(
+  profiles,
+  useQueryParam('name'),
+  useQueryParam('country'),
+);
 
 function openProfile(profile: Profile): void {
   void router.push({ name: 'saved-detail', params: { id: profile.id } });
